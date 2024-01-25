@@ -1,16 +1,18 @@
 import express from 'express'
 import morgan from 'morgan'
 import mongoose from 'mongoose'
-import api from './routes/api'
-import errorHandler from './util/errorHandler'
 import dotenv from 'dotenv'
 import { UserLevel } from './schemas/user'
+import api from './routes/api'
+import errorHandler from './util/errorHandler'
 
 dotenv.config()
 
+const port = +process.env.PORT || 3000
+const app = express()
+
 mongoose.connect('mongodb://localhost:27017/sistema-clinicas')
 
-const app = express()
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -22,7 +24,6 @@ app.use((req, res, next) => {
 app.use('/api', api)
 app.use(errorHandler.handle)
 
-const port = +process.env.PORT || 3000
 app.listen(port, () => {
 	console.log(`Server started. Port: ${port}`)
 	createDefaultUser()
