@@ -23,12 +23,6 @@ export interface IClinicalPayment {
 	clinic: Types.ObjectId | string
 }
 
-export interface IClinicalPaymentQuery {
-	card?: string
-	date?: string
-	method?: PaymentMethods
-}
-
 const schema = new Schema<IClinicalPayment>({
 	date: {
 		type: Date,

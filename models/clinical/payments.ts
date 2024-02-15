@@ -1,8 +1,14 @@
-import ClinicalPayment, { type IClinicalPaymentQuery, type IClinicalPayment, type INewClinicalPayment } from '../../schemas/clinical/payments'
+import ClinicalPayment, { type PaymentMethods, type IClinicalPayment, type INewClinicalPayment } from '../../schemas/clinical/payments'
 import { type IPatient } from '../../schemas/patient'
 import { NotFoundError } from '../../util/errors'
 import { Pagination, type BasicCRUD, type IPaginationQuery, PaginationResponse } from '../../util/types'
 import PatientModel from '../patient'
+
+export interface IClinicalPaymentQuery {
+	card?: string
+	date?: string
+	method?: PaymentMethods
+}
 
 class ClinicalPaymentModel implements BasicCRUD<INewClinicalPayment, IClinicalPayment> {
 	async create(newPayment: INewClinicalPayment, clinicId: string) {
