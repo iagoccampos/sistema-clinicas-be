@@ -1,5 +1,5 @@
 import Patient, { type IPatient, type INewPatient } from '../schemas/patient'
-import { type BasicCRUD } from '../util/types'
+import { PaginationResponse, type BasicCRUD, Pagination } from '../util/types'
 
 interface Query {
   name?: string
@@ -13,7 +13,7 @@ interface Query {
 
 interface MappedQuery {
   name?: string | RegExp
-  birthday?: Date
+  birthday?: Date | string
   rg?: string
   cpf?: string
   card?: number
@@ -40,25 +40,10 @@ class PatientModel implements BasicCRUD<INewPatient, IPatient> {
 	}
 
 	async find(clinicId: string, query: Query) {
-		const page = +(query.page ?? NaN)
-		const limit = +(query.limit ?? NaN)
-
-		const mappedQuery: MappedQuery = {}
-
-		if (query.birthday) {
-			mappedQuery.birthday = new Date(query.birthday)
-		}
+		const mappedQuery: MappedQuery = { rg: query.rg, cpf: query.cpf, birthday: query.birthday }
 
 		if (query.name) {
 			mappedQuery.name = new RegExp(query.name, 'gi')
-		}
-
-		if (query.rg) {
-			mappedQuery.rg = query.rg
-		}
-
-		if (query.cpf) {
-			mappedQuery.cpf = query.cpf
 		}
 
 		if (query.card) {
@@ -66,13 +51,11 @@ class PatientModel implements BasicCRUD<INewPatient, IPatient> {
 		}
 
 		const total = await Patient.find({ clinic: clinicId, ...mappedQuery }).countDocuments().exec()
-		const patientsQuery = Patient.find({ clinic: clinicId, ...mappedQuery })
 
-		if (!isNaN(page) && !isNaN(limit)) {
-			patientsQuery.skip(+page * +limit).limit(+limit)
-		}
+		const pagination = new Pagination(query)
+		const patientsQuery = Patient.find({ clinic: clinicId, ...mappedQuery }).skip(pagination.skip).limit(pagination.limit)
 
-		return { total, items: await patientsQuery.lean().exec() }
+		return new PaginationResponse(total, await patientsQuery.lean().exec())
 	}
 
 	async findByCard(card: string) {
