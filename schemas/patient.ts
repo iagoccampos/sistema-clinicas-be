@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose'
+import { Schema, type Types, model } from 'mongoose'
 
 export interface INewPatient {
   name: string
@@ -9,13 +9,14 @@ export interface INewPatient {
 }
 
 export interface IPatient {
+	_id: Types.ObjectId
   card: number
   name: string
   birthday?: Date
   rg?: string
   cpf?: string
   phones?: string[]
-  clinic: Schema.Types.ObjectId
+  clinic: Types.ObjectId
 }
 
 const schema = new Schema<IPatient>({

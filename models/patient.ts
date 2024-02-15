@@ -20,7 +20,7 @@ interface MappedQuery {
 }
 
 class PatientModel implements BasicCRUD<INewPatient, IPatient> {
-	async create(clinicId: string, newPatient: INewPatient) {
+	async create(newPatient: INewPatient, clinicId: string) {
 		const patient = await Patient.create({ clinic: clinicId, ...newPatient })
 		return patient.toObject()
 	}
@@ -73,6 +73,10 @@ class PatientModel implements BasicCRUD<INewPatient, IPatient> {
 		}
 
 		return { total, items: await patientsQuery.lean().exec() }
+	}
+
+	async findByCard(card: string) {
+		return await Patient.findOne({ card }).lean().exec()
 	}
 }
 

@@ -14,7 +14,7 @@ router.get<{ clinicId: string }>('', async(req, res, next) => {
 
 router.post<{ clinicId: string }>('', async(req, res, next) => {
 	try {
-		const patient = await PatientModel.create(req.params.clinicId, req.body)
+		const patient = await PatientModel.create(req.body, req.params.clinicId)
 		res.json(patient)
 	} catch (err) {
 		next(err)
