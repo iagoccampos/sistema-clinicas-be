@@ -12,9 +12,8 @@ class ClinicalPaymentModel implements BasicCRUD<INewClinicalPayment, IClinicalPa
 			throw new NotFoundError('Paciente não encontrado.')
 		}
 
-		const payment = new ClinicalPayment({ ...newPayment, clinic: clinicId, patient: patient._id })
-		payment.save()
-		return payment
+		const payment = await ClinicalPayment.create({ ...newPayment, clinic: clinicId, patient: patient._id })
+		return payment.toObject()
 	}
 
 	async get(id: string) {
@@ -30,10 +29,9 @@ class ClinicalPaymentModel implements BasicCRUD<INewClinicalPayment, IClinicalPa
 		const mappedQuery: Partial<IClinicalPayment> = { clinic: clinicId, method: query.method, date: query.date, patient: patient?._id }
 
 		const total = await ClinicalPayment.find(mappedQuery).countDocuments().exec()
-		const paymentsQuery = ClinicalPayment.find(mappedQuery).populate('patient')
-		const pagination = new Pagination(query)
 
-		paymentsQuery.skip(pagination.skip).limit(pagination.limit)
+		const pagination = new Pagination(query)
+		const paymentsQuery = ClinicalPayment.find(mappedQuery).populate('patient').skip(pagination.skip).limit(pagination.limit)
 
 		return new PaginationResponse(total, await paymentsQuery.exec())
 	}
