@@ -1,4 +1,5 @@
 import { Schema, type Types, model } from 'mongoose'
+import { generateStringValidators } from '../util/schemaPropertyGen'
 
 export interface INewPatient {
   name: string
@@ -26,8 +27,7 @@ const schema = new Schema<IPatient>({
 	name: {
 		type: String,
 		trim: true,
-		required: [true, 'Nome do paciente é requerido.'],
-		maxLength: [50, 'Nome do paciente deve conter no máximo 50 caracteres.'],
+		...generateStringValidators('Nome', { required: true, maxlength: 50 }),
 	},
 	birthday: {
 		type: Date,
