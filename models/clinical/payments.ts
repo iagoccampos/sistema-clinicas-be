@@ -12,7 +12,7 @@ export interface IClinicalPaymentQuery {
 
 class ClinicalPaymentModel implements BasicCRUD<INewClinicalPayment, IClinicalPayment> {
 	async create(newPayment: INewClinicalPayment, clinicId: string) {
-		const patient = await PatientModel.findByCard(newPayment.card)
+		const patient = await PatientModel.findByCard(clinicId, newPayment.card)
 
 		if (!patient) {
 			throw new NotFoundError('Paciente não encontrado.')
@@ -28,8 +28,9 @@ class ClinicalPaymentModel implements BasicCRUD<INewClinicalPayment, IClinicalPa
 
 	async getClinicPayments(clinicId: string, query: IClinicalPaymentQuery & IPaginationQuery) {
 		let patient: IPatient | null = null
+
 		if (query.card) {
-			patient = await PatientModel.findByCard(query.card)
+			patient = await PatientModel.findByCard(clinicId, query.card)
 		}
 
 		const mappedQuery: Partial<IClinicalPayment> = { clinic: clinicId, method: query.method, date: query.date, patient: patient?._id }
