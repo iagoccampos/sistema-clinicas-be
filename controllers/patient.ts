@@ -12,6 +12,15 @@ router.get<{ clinicId: string }>('', async(req, res, next) => {
 	}
 })
 
+router.get<{ clinicId: string }, unknown, unknown, { card: string }>('/find-by-card', async(req, res, next) => {
+	try {
+		const patients = await PatientModel.findByCard(req.params.clinicId, req.query.card)
+		res.json(patients)
+	} catch (err) {
+		next(err)
+	}
+})
+
 router.post<{ clinicId: string }>('', async(req, res, next) => {
 	try {
 		const patient = await PatientModel.create(req.body, req.params.clinicId)

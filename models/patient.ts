@@ -58,8 +58,8 @@ class PatientModel implements BasicCRUD<INewPatient, IPatient> {
 		return new PaginationResponse(total, await patientsQuery.lean().exec())
 	}
 
-	async findByCard(card: string) {
-		return await Patient.findOne({ card }).lean().exec()
+	async findByCard(clinicId: string, card: string) {
+		return await Patient.findOne({ clinic: clinicId, card }).lean().exec()
 	}
 }
 
