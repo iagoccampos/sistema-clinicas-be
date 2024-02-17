@@ -25,6 +25,7 @@
 			"error",
 			"always-multiline"
 		],
+		"@typescript-eslint/no-dynamic-delete": "off",
 		"@typescript-eslint/space-before-function-paren": "off",
 		"@typescript-eslint/comma-dangle": "off",
 		"@typescript-eslint/no-throw-literal": "off",
