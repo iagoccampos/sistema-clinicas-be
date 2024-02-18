@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import { UserLevel } from './schemas/user'
 import api from './routes/api'
 import errorHandler from './util/errorHandler'
+import { NotFoundError } from './util/errors'
 
 dotenv.config()
 
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 	}, 1000)
 })
 app.use('/api', api)
+app.use('*', (req, res, next) => { next(new NotFoundError('Rota não encontrada.')) })
 app.use(errorHandler.handle)
 
 app.listen(port, () => {
