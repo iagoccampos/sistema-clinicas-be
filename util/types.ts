@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-readonly */
+export type PatialNullable<T> = { [K in keyof T]?: T[K] | null }
+
 export interface BasicCRUD<N, M> {
 	create: (((object: N) => Promise<M>) | ((object: N, ...id: string[]) => Promise<M>))
 	get: (id: string) => Promise<M | null>

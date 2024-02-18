@@ -1,7 +1,7 @@
 import ClinicalPayment, { type PaymentMethods, type IClinicalPayment, type INewClinicalPayment } from '../../schemas/clinical/payments'
 import { type IPatient } from '../../schemas/patient'
 import { NotFoundError } from '../../util/errors'
-import { Pagination, type BasicCRUD, type IPaginationQuery, PaginationResponse } from '../../util/types'
+import { Pagination, type BasicCRUD, type IPaginationQuery, PaginationResponse, type PatialNullable } from '../../util/types'
 import PatientModel from '../patient'
 
 export interface IClinicalPaymentQuery {
@@ -33,7 +33,12 @@ class ClinicalPaymentModel implements BasicCRUD<INewClinicalPayment, IClinicalPa
 			patient = await PatientModel.findByCard(clinicId, query.card)
 		}
 
-		const mappedQuery: Partial<IClinicalPayment> = { clinic: clinicId, method: query.method, date: query.date, patient: patient?._id }
+		const mappedQuery: PatialNullable<IClinicalPayment> = {
+			clinic: clinicId,
+			patient: patient?._id ?? null,
+			method: query.method,
+			date: query.date,
+		}
 
 		const total = await ClinicalPayment.find(mappedQuery).countDocuments().exec()
 
