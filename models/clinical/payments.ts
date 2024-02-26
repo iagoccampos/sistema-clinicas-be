@@ -35,7 +35,7 @@ class ClinicalPaymentModel implements BasicCRUD<INewClinicalPayment, IClinicalPa
 
 		const mappedQuery: PatialNullable<IClinicalPayment> = {
 			clinic: clinicId,
-			patient: patient?._id ?? null,
+			patient: patient?._id ?? undefined,
 			method: query.method,
 			date: query.date,
 		}
